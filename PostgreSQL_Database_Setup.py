@@ -4,8 +4,7 @@ import configparser
 config = configparser.ConfigParser()
 config.read('config.ini')
 
-#database = config['postgreSQL']['database']
-database = 'test'
+database = config['postgreSQL']['database']
 host = config['postgreSQL']['host']
 user = config['postgreSQL']['user']
 password = config['postgreSQL']['password']
