@@ -1,16 +1,6 @@
 #Take the poistion of every bus and and extract a list of all bus routes.
 
-import configparser
-config = configparser.ConfigParser()
-config.read('config.ini')
-
-import http.client, urllib.request, urllib.parse, urllib.error, base64
-import pandas as pd
-import json
-
-import psycopg2
-
-from sqlalchemy import create_engine
+from ENV_Setup import *
 
 #Create an API key variable.
 APIKey = config['WMATA']['API_Key']
@@ -49,41 +39,7 @@ busRoutes.head()
 
 busRoutes['DirectionText'].value_counts()
 
-####Create table in postgreSQL#############################
-
-
-# Connect to postgreSQL
-database = config['postgreSQL']['database']
-host = config['postgreSQL']['host']
-user = config['postgreSQL']['user']
-password = config['postgreSQL']['password']
-port = config['postgreSQL']['port']
-
-SQLConn = psycopg2.connect(database = database,
-                           host = host,
-                           user = user,
-                           password = password,
-                           port = port)
-
-SQLConn.autocommit = True
-cursor = SQLConn.cursor()
-
-# check if table exists. If not, create table
-createTable = ''' 
-CREATE TABLE IF NOT EXISTS 
-Bus_Routes (
-routeId VARCHAR(5),
-directionText VARCHAR(10),
-ripHeadsign VARCHAR(255)
-) 
-''';
-
-cursor.execute(createTable)
-
-SQLConn.close()
-
-
-#Add bus route data to Bus_Routes Table
+#Create and add bus route data to Bus_Routes Table
 
 engine = create_engine(f'postgresql://{config["postgreSQL"]["user"]}:{config["postgreSQL"]["password"]}@{config["postgreSQL"]["host"]}:{config["postgreSQL"]["port"]}/{config["postgreSQL"]["database"]}')
 

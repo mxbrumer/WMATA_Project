@@ -1,8 +1,4 @@
-import psycopg2
-
-import configparser
-config = configparser.ConfigParser()
-config.read('config.ini')
+from ENV_Setup import *
 
 database = config['postgreSQL']['database']
 host = config['postgreSQL']['host']
