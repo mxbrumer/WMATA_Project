@@ -5,6 +5,7 @@ import pandas as pd
 import json
 import http.client, urllib.request, urllib.parse, urllib.error, base64
 import psycopg2
+from datetime import datetime, time
 
 
 #Import config file
