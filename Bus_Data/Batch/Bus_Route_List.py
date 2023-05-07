@@ -43,7 +43,8 @@ busRoutes['DirectionText'].value_counts()
 
 engine = create_engine(f'postgresql://{config["postgreSQL"]["user"]}:{config["postgreSQL"]["password"]}@{config["postgreSQL"]["host"]}:{config["postgreSQL"]["port"]}/{config["postgreSQL"]["database"]}')
 
-busRoutes.to_sql('Bus_Routes', 
+busRoutes.to_sql('busroutes', 
+                 schema='bronze',
                  con = engine,
                  if_exists = 'replace', #Future version should create a test to append this data rather than replace it.
                  index = False)

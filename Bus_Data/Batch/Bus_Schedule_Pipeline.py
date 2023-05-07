@@ -3,7 +3,7 @@ from Postgres_Functions import *
 from Bus_Schedule_Functions import *
 
 #Pull list of routes
-busRoutes = pd.read_sql_query('SELECT * FROM "Bus_Routes"', con = engine)
+busRoutes = pd.read_sql_query('SELECT * FROM bronze.busroutes', con = engine)
 routeId = busRoutes.drop_duplicates(subset=['RouteID'])
 
 #Create bronze level route tables and save to postgres########################################################################################################################
@@ -12,8 +12,8 @@ for route in routeId['RouteID']:
     # Set API key and postgres information
     APIKey = config['WMATA']['API_Key']
     schema = 'bronze'
-    table = f'Route_{route}'
-    database = f"{config['postgreSQL']['database']}"
+    table = f'route{route}'
+    database = config['postgreSQL']['database']
     host = config['postgreSQL']['host']
     user = config['postgreSQL']['user']
     password = config['postgreSQL']['password']
@@ -34,7 +34,8 @@ for route in routeId['RouteID']:
                                           date = '', 
                                           variations = False)
 
-    
+
+
     busRoute0, busRoute1 = convert_json_data_to_pandas(jsonData)
 
 
@@ -43,8 +44,29 @@ for route in routeId['RouteID']:
     print(f'{table} is done')
 
 
-
 #Create silver level tables###################################################################################################################################################
+for route in routeId['RouteID']:
+
+    # Set API key and postgres information
+    APIKey = config['WMATA']['API_Key']
+    schema = 'silver'
+    table = f'route{route}'
+    database = config['postgreSQL']['database']
+    host = config['postgreSQL']['host']
+    user = config['postgreSQL']['user']
+    password = config['postgreSQL']['password']
+    port = config['postgreSQL']['port']
+
+    # Pipeline
+    drop_existing_postgres_table(schema = schema,
+                                 table = table, 
+                                 dtb = database, 
+                                 hst = host, 
+                                 usr = user, 
+                                 pswd = password, 
+                                 prt = port)
+
+
 
 
 #Create gold level tables#####################################################################################################################################################
