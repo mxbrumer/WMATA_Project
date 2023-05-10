@@ -35,6 +35,12 @@ def drop_existing_postgres_table(schema, table, dtb, hst, usr, pswd, prt):
     cursor.execute(sql)
     SQLConn.close()
 
+def retireve_sql_table(schema, table):
+    try:
+        pandasTable = pd.read_sql_query(f'SELECT * FROM {schema}."{table}"', con = engine)
+        return pandasTable
+    except:
+        return 'Table Does Not Exist'
 
 # Save pandas DataFrames to the postgres database. 
 # Must specify pandas DataFrames, postgres schema, and table
@@ -78,6 +84,13 @@ def save_bus_schedule_data_to_postgres(schema, table, busRoute0, busRoute1):
         busRoute1 = busRoute1.set_index('TripID')
         busRoute1['StopTimes'] = busRoute1['StopTimes'].apply(lambda row: str(row))
         busRoute1.to_sql(table, 
+             con = engine,
+             if_exists = 'replace', #Replace drops the existing table if there is one and creates a new table.
+             schema = schema,
+             index = False)
+        
+def save_table_to_postgres(pdDataFrame, tableName, schema):
+    pdDataFrame.to_sql(tableName, 
              con = engine,
              if_exists = 'replace', #Replace drops the existing table if there is one and creates a new table.
              schema = schema,

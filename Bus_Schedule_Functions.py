@@ -55,6 +55,41 @@ def convert_json_data_to_pandas(jsonData):
 
 
 # Silver Level Functions ###################################################################################################################
+def convert_series_of_strings_to_series_of_dict(series):
+    seriesOfDicts = series.apply(lambda row: ast.literal_eval(row))
+    return seriesOfDicts
 
+def expand_series_of_dicts_to_pandas(seriesOfDicts):
+    expandedPd = pd.DataFrame()
+    for row in range(0,len(seriesOfDicts)):
+        expandedPd = pd.concat([expandedPd, pd.DataFrame.from_dict(seriesOfDicts[row])])
+    return expandedPd
+
+
+
+# Seperate data by direction
+def split_route_by_bus_direction(routePd):
+    routePd0 = routePd[routePd['DirectionNum'] == '0']
+    routePd1 = routePd[routePd['DirectionNum'] == '1'] 
+
+    return routePd0, routePd1
+
+
+
+def combine_pd_dataframes_for_both_directions(routePd0, routePd1, stopTimesExpandedPd0, stopTimesExpandedPd1):
+    if pd.isnull(routePd0).all().all() and pd.isnull(routePd1).all().all():
+        return
+
+    if pd.isnull(routePd0).all().all() == False and pd.isnull(routePd1).all().all() == True:
+        stopTimesExpandedPdFull = stopTimesExpandedPd0
+        return stopTimesExpandedPdFull
+
+    if pd.isnull(routePd0).all().all() == True and pd.isnull(routePd1).all().all() == False:
+        stopTimesExpandedPdFull = stopTimesExpandedPd1
+        return stopTimesExpandedPdFull
+
+    if pd.isnull(routePd0).all().all() == False and pd.isnull(routePd1).all().all() == False:
+        stopTimesExpandedPdFull = pd.concat([stopTimesExpandedPd0, stopTimesExpandedPd1])
+        return stopTimesExpandedPdFull
 
 # Gold Level Functions #####################################################################################################################
