@@ -102,7 +102,7 @@ def combine_route_schedule_tables(routeList, schema = 'silver'):
         newRouteSchedule = retireve_sql_table(schema = schema,
                                               table = table)
         if isinstance(newRouteSchedule, pd.DataFrame):
-            newRouteSchedule['routeId'] = route
+            newRouteSchedule['RouteID'] = route
             busScheduleFull = pd.concat([busScheduleFull, newRouteSchedule])
         else:
             continue
