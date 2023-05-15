@@ -13,4 +13,3 @@ locationsPd = convert_stop_location_json_to_pandas(locationsJson)
 
 save_table_to_postgres(locationsPd, table, schema)
 
-locationsPd[locationsPd['Name'] == 'CONNECTICUT AVE + ASPEN HILL RD']

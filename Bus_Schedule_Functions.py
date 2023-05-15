@@ -93,3 +93,18 @@ def combine_pd_dataframes_for_both_directions(routePd0, routePd1, stopTimesExpan
         return stopTimesExpandedPdFull
 
 # Gold Level Functions #####################################################################################################################
+
+def combine_route_schedule_tables(routeList, schema = 'silver'):
+    busScheduleFull = pd.DataFrame()
+
+    for route in routeList:
+        table = f'route{route}'
+        newRouteSchedule = retireve_sql_table(schema = schema,
+                                              table = table)
+        if isinstance(newRouteSchedule, pd.DataFrame):
+            newRouteSchedule['routeId'] = route
+            busScheduleFull = pd.concat([busScheduleFull, newRouteSchedule])
+        else:
+            continue
+
+    return busScheduleFull

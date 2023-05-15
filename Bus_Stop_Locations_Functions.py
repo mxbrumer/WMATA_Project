@@ -35,15 +35,14 @@ def pull_bus_stop_locations_from_api(APIKey, latitude = '', longitude = '', radi
 
 def convert_stop_location_json_to_pandas(jsonData):
     jsonData = json.loads(jsonData)
-    pdData = pd.DataFrame.from_dict(jsonData['Stops'])
-
-    #busStops = pdData.drop_duplicates(subset = ['StopID'])
-    busStopsPd = pdData.set_index(['StopID'])
+    busStopsPd = pd.DataFrame.from_dict(jsonData['Stops'])
 
     return busStopsPd
 
 
 
 # Silver Level Functions ###################################################################################################################
+
+
 
 # Gold Level Functions #####################################################################################################################
