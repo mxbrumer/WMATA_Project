@@ -1,4 +1,5 @@
 from ENV_Setup import *
+from Postgres_Functions import *
 
 # Bronze Level Functions ###################################################################################################################
 
@@ -108,3 +109,8 @@ def combine_route_schedule_tables(routeList, schema = 'silver'):
             continue
 
     return busScheduleFull
+
+def convert_text_to_int(data, column):
+    data[column] = data[column].apply(lambda row: int(row))
+
+    return data
