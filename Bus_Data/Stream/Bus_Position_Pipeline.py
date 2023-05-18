@@ -1,25 +1,34 @@
 from ENV_Setup import *
 from Bus_Position_Functions import *
+from Postgres_Functions import *
 
 #Create an API key variable.
 APIKey = config['WMATA']['API_Key']
 
-if check_time(time(0,0), time(0,1)) == True:
-    #ADD FUNCTION FOR ARCHIVING OLD DATA
-    bus_position_delete('Bus_Positions')
 
-else:
-    #Pull bus position data
-    busPositions = bus_position_pull(APIKey, 
+# Create bus position table and save to postgres################################################################################
+
+busPositionsJson = bus_position_pull(APIKey, 
                                      RouteID = '',
                                      Lat = '',
                                      Lon = '',
                                      Radius = '')
-    
-    #Create table if this is the first pull of the day
-    if check_time(time(5,0), time(5,1)) == True:
-        bus_position_create(busPositions)
 
-    #Append the table for each subsequent data pull
-    else:
-        bus_position_append(busPositions)
+busPsotitionsPd = convertbus_positions_json_to_pandas(busPositionsJson)
+
+save_table_to_postgres(busPsotitionsPd, 'buspositions', schema = 'bronze', if_exists = 'replace')
+
+
+# Create ongoing data pull####################################################################################################
+while check_time(time(5,0), time(23,59)):
+    busPositionsJson = bus_position_pull(APIKey, 
+                                         RouteID = '',
+                                         Lat = '',
+                                         Lon = '',
+                                         Radius = '')
+
+    busPsotitionsPd = convertbus_positions_json_to_pandas(busPositionsJson)
+
+    save_table_to_postgres(busPsotitionsPd, 'buspositions', schema = 'bronze', if_exists = 'append')
+
+    time.sleep(10)

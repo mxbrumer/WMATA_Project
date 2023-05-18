@@ -23,16 +23,20 @@ def bus_position_pull(APIKey,
         conn = http.client.HTTPSConnection('api.wmata.com')
         conn.request("GET", "/Bus.svc/json/jBusPositions?%s" % params, "{body}", headers)
         response = conn.getresponse()
-        data = response.read()
+        busPositionsJson = response.read()
         #print(data)
         conn.close()
     except Exception as e:
         print("[Errno {0}] {1}".format(e.errno, e.strerror))
 
-    jsonData = json.loads(data)
-    busPositions = pd.DataFrame.from_dict(jsonData['BusPositions'])
+    return busPositionsJson
 
-    return busPositions
+
+def convertbus_positions_json_to_pandas(busPositionsJson):
+    busPositionsDict = json.loads(busPositionsJson)
+    busPositionsPd = pd.DataFrame.from_dict(busPositionsDict['BusPositions'])
+
+    return busPositionsPd
 
 
 #Create a function to check the time. Is the current time between a start time and end time?

@@ -89,9 +89,9 @@ def save_bus_schedule_data_to_postgres(schema, table, busRoute0, busRoute1):
              schema = schema,
              index = False)
         
-def save_table_to_postgres(pdDataFrame, tableName, schema):
+def save_table_to_postgres(pdDataFrame, tableName, schema, if_exists = 'replace'):
     pdDataFrame.to_sql(tableName, 
              con = engine,
-             if_exists = 'replace', #Replace drops the existing table if there is one and creates a new table.
+             if_exists = if_exists, #Replace drops the existing table if there is one and creates a new table.
              schema = schema,
              index = False)
